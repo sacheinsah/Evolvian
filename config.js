@@ -1,0 +1,1 @@
+window.Evolvian_CONFIG={SUPABASE_URL:"https://ghsagnlxsvrpysfirqlc.supabase.co",SUPABASE_PUBLISHABLE_KEY:"sb_publishable_bsZoiIrRedVwF0bmn6iRSg_5PlUp_-K"};
