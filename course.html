@@ -1,1 +1,68 @@
-<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Evolvian — Course</title><link rel="stylesheet" href="styles.css"></head><body><header class="top"><a class="logo" href="index.html">EVOLVIAN</a><nav><a href="index.html">Home</a><a class="active" href="learn.html">Learn</a><a href="community.html">Community</a><a href="profile.html">Profile</a></nav><a class="avatar" href="profile.html">A</a></header><main class="page"><a class="btn" href="learn.html">← Back to Learn</a><section id="courseView" class="panel" style="margin-top:20px"><p class="muted">Loading course…</p></section></main><div class="toast"></div><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="config.js"></script><script src="app-v2.js?v=20261003-2"></script><script>(async()=>{const el=document.getElementById('courseView'),id=new URLSearchParams(location.search).get('id');if(!id){el.innerHTML='<h2>Course not found</h2>';return}const sb=window.supabase.createClient(window.Evolvian_CONFIG.SUPABASE_URL,window.Evolvian_CONFIG.SUPABASE_PUBLISHABLE_KEY);try{const c=await sb.from('courses').select('*').eq('id',id).single();if(c.error)throw c.error;const l=await sb.from('lessons').select('*').eq('course_id',id).order('position',{ascending:true});if(l.error)throw l.error;el.innerHTML='<span>COURSE</span><h1>'+escCourse(c.data.title)+'</h1><p class="muted">'+escCourse(c.data.description||'')+'</p><div class="panel"><h2>Lessons</h2>'+((l.data||[]).map(x=>'<article class="question"><h3>'+escCourse(x.title)+'</h3><p>'+escCourse(x.content||'')+'</p>'+(x.video_url?'<a class="primary" target="_blank" rel="noopener" href="'+escAttr(x.video_url)+'">Watch lesson →</a>':'')+'</article>').join('')||'<p class="muted">No lessons published yet.</p>')+'</div>'}catch(e){console.error(e);el.innerHTML='<h2>Course unavailable</h2><p class="muted">This course could not be loaded. Please return to Learn and try again.</p>'}})();function escCourse(v){const d=document.createElement('div');d.textContent=v??'';return d.innerHTML}function escAttr(v){return String(v??'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}</script></body></html>
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Evolvian — Course</title>
+<link rel="stylesheet" href="styles.css?v=course-mentor-1">
+<link rel="stylesheet" href="cyber-background.css?v=20261003-1">
+<link rel="stylesheet" href="mobile-nav.css?v=20261003-2">
+<style>
+.course-shell{display:grid;grid-template-columns:310px minmax(0,1fr);gap:24px;align-items:start;margin-top:22px}
+.lesson-sidebar{position:sticky;top:22px;max-height:calc(100vh - 44px);overflow:auto;padding:18px;border:1px solid rgba(255,255,255,.09);border-radius:18px;background:rgba(10,12,14,.78);backdrop-filter:blur(14px)}
+.lesson-sidebar h2{font-size:18px;margin:4px 0 6px}.lesson-count{font-size:12px;opacity:.62;margin-bottom:16px}.lesson-list{display:grid;gap:7px}.lesson-item{display:block;width:100%;text-align:left;padding:12px 13px;border:1px solid transparent;border-radius:12px;background:transparent;color:inherit;cursor:pointer}.lesson-item:hover{background:rgba(255,255,255,.045);border-color:rgba(255,255,255,.08)}.lesson-item.active{background:rgba(56,255,139,.09);border-color:rgba(56,255,139,.35)}.lesson-item small{display:block;opacity:.5;margin-bottom:4px}.lesson-item strong{font-size:13px;font-weight:600}
+.lesson-main{min-width:0}.lesson-header{padding:28px;border:1px solid rgba(255,255,255,.09);border-radius:20px;background:rgba(10,12,14,.7)}.lesson-kicker{font-size:11px;letter-spacing:.18em;opacity:.58}.lesson-header h1{font-size:clamp(30px,5vw,52px);line-height:1.02;margin:10px 0}.lesson-header p{max-width:760px;opacity:.7;line-height:1.7}.mentor-card{margin-top:18px;padding:18px;border-left:3px solid #39ff8a;border-radius:12px;background:rgba(57,255,138,.055)}.mentor-card strong{display:block;margin-bottom:6px}.lesson-content{margin-top:18px;padding:28px;border:1px solid rgba(255,255,255,.09);border-radius:20px;background:rgba(10,12,14,.7)}.lesson-section{margin:0 0 28px}.lesson-section:last-child{margin-bottom:0}.lesson-section h2{font-size:21px;margin:0 0 10px}.lesson-section p{line-height:1.8;opacity:.82;margin:0 0 12px;white-space:pre-wrap}.lesson-section.practice{padding:20px;border-radius:16px;background:rgba(57,255,138,.055);border:1px solid rgba(57,255,138,.16)}.lesson-section.checkpoint{padding:20px;border-radius:16px;background:rgba(255,255,255,.035)}.lesson-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px}.lesson-actions button,.lesson-actions a{border:1px solid rgba(255,255,255,.13);border-radius:10px;padding:11px 15px;background:transparent;color:inherit;cursor:pointer;text-decoration:none}.lesson-actions .primary{background:#39ff8a;color:#07100b;border-color:#39ff8a;font-weight:700}.video-wrap{margin-top:18px;aspect-ratio:16/9;overflow:hidden;border-radius:16px;background:#050607}.video-wrap iframe,.video-wrap video{width:100%;height:100%;border:0}.loading{padding:30px;opacity:.65}
+@media(max-width:850px){.course-shell{grid-template-columns:1fr}.lesson-sidebar{position:static;max-height:none}.lesson-list{display:flex;overflow-x:auto;padding-bottom:4px}.lesson-item{min-width:210px}.lesson-content,.lesson-header{padding:20px}}
+</style>
+</head>
+<body>
+<header class="top"><a class="logo" href="index.html">EVOLVIAN</a><nav><a href="index.html">Home</a><a class="active" href="learn.html">Learn</a><a href="community.html">Community</a><a href="profile.html">Dashboard</a></nav><a class="avatar" href="profile.html">A</a></header>
+<main class="page">
+<a class="btn" href="learn.html">← Back to Learn</a>
+<div id="courseView" class="loading">Loading course…</div>
+</main>
+<div class="toast"></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="config.js"></script>
+<script src="app-v2.js?v=20261003-2"></script>
+<script src="mobile-nav.js?v=20261003-2"></script>
+<script>
+(async()=>{
+ const root=document.getElementById('courseView');
+ const id=new URLSearchParams(location.search).get('id');
+ if(!id){root.innerHTML='<section class="panel"><h2>Course not found</h2><p class="muted">Return to Learn and choose a course.</p></section>';return}
+ const sb=window.supabase.createClient(window.Evolvian_CONFIG.SUPABASE_URL,window.Evolvian_CONFIG.SUPABASE_PUBLISHABLE_KEY);
+ try{
+  const {data:c,error:ce}=await sb.from('courses').select('*').eq('id',id).single();
+  if(ce) throw ce;
+  const {data:lessons,error:le}=await sb.from('lessons').select('*').eq('course_id',id).order('position',{ascending:true});
+  if(le) throw le;
+  const list=lessons||[];
+  root.innerHTML=`<div class="course-shell"><aside class="lesson-sidebar"><h2>${esc(c.title)}</h2><div class="lesson-count">${list.length} lessons · Learn step by step</div><div id="lessonList" class="lesson-list"></div></aside><section class="lesson-main"><div id="lessonMain"></div></section></div>`;
+  const listEl=document.getElementById('lessonList');
+  list.forEach((lesson,i)=>{const b=document.createElement('button');b.className='lesson-item';b.type='button';b.innerHTML='<small>LESSON '+String(lesson.position).padStart(2,'0')+'</small><strong>'+esc(lesson.title.replace(/^\d+\s*[·.-]?\s*/,'').trim())+'</strong>';b.addEventListener('click',()=>showLesson(i));listEl.appendChild(b)});
+  showLesson(0);
+  function showLesson(index){
+   const lesson=list[index];
+   [...listEl.children].forEach((b,i)=>b.classList.toggle('active',i===index));
+   const sections=parseContent(lesson.content||'');
+   document.getElementById('lessonMain').innerHTML=`<header class="lesson-header"><div class="lesson-kicker">LESSON ${String(lesson.position).padStart(2,'0')} · ${esc(c.title)}</div><h1>${esc(cleanTitle(lesson.title))}</h1><p>Learn this lesson with guidance, explanation, examples and hands-on practice. Move forward only when the ideas make sense to you.</p><div class="mentor-card"><strong>Mentor mode</strong><span>I’ll guide you through the idea first, then give you something practical to try. Don’t just copy commands — understand what they do and why.</span></div>${lesson.video_url?`<div class="video-wrap"><iframe src="${escAttr(toEmbed(lesson.video_url))}" title="${escAttr(lesson.title)}" allowfullscreen></iframe></div>`:''}</header><article class="lesson-content">${sections.map(renderSection).join('')}<div class="lesson-actions">${index>0?'<button id="prevLesson">← Previous</button>':''}${index<list.length-1?'<button class="primary" id="nextLesson">Complete lesson · Next →</button>':'<button class="primary" id="finishCourse">Course complete</button>'}</div></article>`;
+   document.getElementById('prevLesson')?.addEventListener('click',()=>showLesson(index-1));document.getElementById('nextLesson')?.addEventListener('click',()=>showLesson(index+1));document.getElementById('finishCourse')?.addEventListener('click',()=>alert('Excellent work. You reached the end of this course.'));
+   window.scrollTo({top:0,behavior:'smooth'});
+  }
+  function parseContent(text){
+   const lines=text.split(/\n/), out=[];let current={title:'Lesson',body:[]};
+   const headings=['MENTOR EXPLAINS','WHAT IS LINUX?','DISTRIBUTIONS','THE LINUX MENTAL MODEL','THE TERMINAL','WHERE LINUX IS USED','YOUR FIRST COMMANDS','PRACTICE','MENTOR CHECKPOINT','NEXT STEP'];
+   for(const line of lines){const t=line.trim();const normalized=t.toUpperCase();if(headings.includes(normalized)){if(current.body.join('').trim())out.push(current);current={title:t.replace(/[?]$/,''),body:[]}}else if(t) current.body.push(t)}
+   if(current.body.join('').trim())out.push(current);return out;
+  }
+  function renderSection(s){const key=s.title.toUpperCase();let cls='lesson-section';if(key==='PRACTICE')cls+=' practice';if(key==='MENTOR CHECKPOINT')cls+=' checkpoint';return `<section class="${cls}"><h2>${esc(s.title)}</h2>${s.body.map(p=>`<p>${esc(p)}</p>`).join('')}</section>`}
+  function cleanTitle(v){return String(v||'').replace(/^\d+\s*[·.-]?\s*/,'').trim()}
+  function toEmbed(url){try{const u=new URL(url);if(u.hostname.includes('youtube.com')&&u.searchParams.get('v'))return 'https://www.youtube.com/embed/'+u.searchParams.get('v');if(u.hostname==='youtu.be')return 'https://www.youtube.com/embed/'+u.pathname.slice(1);return url}catch{return url}}
+  function esc(v){const d=document.createElement('div');d.textContent=v??'';return d.innerHTML}
+  function escAttr(v){return String(v??'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+ }catch(e){console.error(e);root.innerHTML='<section class="panel"><h2>Course unavailable</h2><p class="muted">This course could not be loaded. Please return to Learn and try again.</p></section>'}
+})();
+</script>
+</body>
+</html>
