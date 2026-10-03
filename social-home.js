@@ -1,0 +1,1 @@
+(()=>{const fix=()=>document.querySelectorAll('#topGrowing a[href^="profile.html?id="]').forEach(a=>{a.href=a.href.replace('profile.html?id=','user.html?id=')});document.addEventListener('DOMContentLoaded',()=>{fix();const el=document.querySelector('#topGrowing');if(el)new MutationObserver(fix).observe(el,{childList:true,subtree:true})})})();
